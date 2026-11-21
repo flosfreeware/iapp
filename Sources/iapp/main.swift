@@ -50,6 +50,7 @@ private enum InstallationState {
 
 private final class InfoWindowController: NSWindowController {
     private var mode: InfoMode = .info
+    private var closeMonitor: Any?
 
     func showInstallation() {
         mode = .installation
@@ -85,7 +86,19 @@ private final class InfoWindowController: NSWindowController {
         window.contentView = NSHostingView(rootView: InfoView(mode: mode, close: { [weak self] in
             self?.close()
         }))
+        if let closeMonitor { NSEvent.removeMonitor(closeMonitor) }
+        closeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard event.modifierFlags.contains(.command), event.keyCode == UInt16(kVK_ANSI_W) else { return event }
+            self?.close()
+            return nil
+        }
         super.showWindow(sender)
+    }
+
+    override func close() {
+        if let closeMonitor { NSEvent.removeMonitor(closeMonitor) }
+        closeMonitor = nil
+        super.close()
     }
 }
 
@@ -136,9 +149,6 @@ private struct InfoView: View {
                 LabeledContent("Contact", value: "cute.mistier5o@icloud.com")
                 LabeledContent("Installed", value: InstallationState.installedAt.formatted(date: .long, time: .shortened))
                 Divider()
-                Text("Press and release Command on its own to open the launcher.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
                 Spacer()
                 HStack {
                     Spacer()
