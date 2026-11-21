@@ -27,7 +27,9 @@ final class LauncherController {
         panel.level = .statusBar
         panel.isFloatingPanel = true
         panel.becomesKeyOnlyIfNeeded = true
-        panel.hidesOnDeactivate = true
+        // This is a non-activating panel: hiding when iapp is inactive would
+        // make it disappear immediately after the global shortcut opens it.
+        panel.hidesOnDeactivate = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         panel.backgroundColor = .clear
         panel.isOpaque = false
