@@ -6,16 +6,18 @@ final class LauncherController {
     private var panel: LauncherPanel?
     private var model: LauncherModel?
     private var escapeMonitor: Any?
+    private var launcherIsVisible = false
 
     func toggle() {
-        if let panel, panel.isVisible {
-            panel.orderOut(nil)
+        if launcherIsVisible {
+            hide()
         } else {
             show()
         }
     }
 
     func show() {
+        guard !launcherIsVisible else { return }
         catalog.refresh()
         let model = LauncherModel(catalog: catalog, dismiss: { [weak self] in self?.hide() })
         self.model = model
@@ -39,6 +41,7 @@ final class LauncherController {
         panel.contentView = NSHostingView(rootView: LauncherView(model: model))
         panel.center()
         self.panel = panel
+        launcherIsVisible = true
         if let escapeMonitor { NSEvent.removeMonitor(escapeMonitor) }
         escapeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard event.keyCode == 53 else { return event } // kVK_Escape
@@ -50,6 +53,7 @@ final class LauncherController {
 
     func hide() {
         panel?.orderOut(nil)
+        launcherIsVisible = false
         if let escapeMonitor { NSEvent.removeMonitor(escapeMonitor) }
         escapeMonitor = nil
     }
