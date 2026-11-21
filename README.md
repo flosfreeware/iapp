@@ -26,7 +26,7 @@ macOS reserves `⌘ Space` for Spotlight by default. iapp registers that shortcu
 
 - No menu-bar item or Dock icon while running.
 - App inventory is scanned only when the launcher opens, then kept in memory for that session; it makes no network requests.
-- Opening `iapp.app` shows a small information window. On first launch it asks about opening at login (enabled by default).
+- iapp stays running without any visible UI. Reopening `iapp.app` while it is running shows a small information window; the first launch asks about opening at login (enabled by default).
 - Login-item setup uses `SMAppService`, available on macOS 13 and later.
 
 ## Distribution

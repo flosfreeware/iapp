@@ -24,9 +24,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         if InstallationState.isFirstLaunch {
             info.showInstallation()
-        } else {
-            // A normal app launch opens iapp's own tiny information window.
-            info.showInfo()
         }
     }
 
