@@ -20,7 +20,7 @@ make install-release
 
 ## Important: Command press
 
-iapp opens when Command is pressed and released without another key. It needs macOS Accessibility permission to observe that global gesture. It never consumes keyboard input, so standard Command shortcuts remain unaffected.
+iapp opens when Command is pressed and released without another key. It needs macOS Accessibility and Input Monitoring permission to observe that global gesture. It never consumes keyboard input, so standard Command shortcuts remain unaffected.
 
 ## Product behavior
 

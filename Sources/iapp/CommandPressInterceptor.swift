@@ -10,11 +10,16 @@ final class CommandPressInterceptor {
     private var source: CFRunLoopSource?
     private var commandIsDown = false
     private var commandWasUsed = false
+    private(set) var isEnabled = false
 
     init(action: @escaping () -> Void) {
         self.action = action
         let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
         guard AXIsProcessTrustedWithOptions(options) else { return }
+        // Input Monitoring is a separate TCC permission on current macOS.
+        // The request causes macOS to show its consent UI when it has not yet
+        // been granted; restarting after approval creates the event tap.
+        guard CGPreflightListenEventAccess() || CGRequestListenEventAccess() else { return }
 
         let mask = (CGEventMask(1) << CGEventType.flagsChanged.rawValue)
             | (CGEventMask(1) << CGEventType.keyDown.rawValue)
@@ -30,6 +35,7 @@ final class CommandPressInterceptor {
         source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
         CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
+        isEnabled = true
     }
 
     deinit {
