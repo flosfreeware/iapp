@@ -14,7 +14,9 @@ final class AppCatalog {
         if Date().timeIntervalSince(lastScan) > 60 { scan() }
         let normalizedQuery = normalize(query)
         guard !normalizedQuery.isEmpty else { return apps.first }
-        return apps.max { score(normalizedQuery, against: normalize($0.name)) < score(normalizedQuery, against: normalize($1.name)) }
+        let ranked = apps.map { app in (app, score(normalizedQuery, against: normalize(app.name))) }
+        guard let best = ranked.max(by: { $0.1 < $1.1 }), best.1 >= 6_000 else { return nil }
+        return best.0
     }
 
     private func scan() {
