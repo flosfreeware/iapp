@@ -52,7 +52,6 @@ final class AppCatalog {
     }
 
     private func register(_ url: URL, into apps: inout Set<LaunchableApp>) {
-        guard url != Bundle.main.bundleURL else { return }
         let name = url.deletingPathExtension().lastPathComponent
         apps.insert(LaunchableApp(name: name, url: url))
     }
