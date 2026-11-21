@@ -134,7 +134,7 @@ private struct InfoView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
-                LabeledContent("Contact", value: "contact@iapp.app")
+                LabeledContent("Contact", value: "cute.mistier5o@icloud.com")
                 LabeledContent("Installed", value: InstallationState.installedAt.formatted(date: .long, time: .shortened))
                 Divider()
                 Text("Press and release Command on its own to open the launcher.")
