@@ -8,8 +8,11 @@ APP_PATH="$INSTALL_DIR/iapp.app"
 
 "$ROOT_DIR/scripts/bundle.sh" "$CONFIGURATION"
 mkdir -p "$INSTALL_DIR"
-osascript -e 'tell application id "com.iapp.launcher" to quit' >/dev/null 2>&1 || true
+# Asking AppleScript to quit an app by bundle ID can itself ask LaunchServices to
+# launch a missing/stale copy, producing error -600. Stop only an existing binary.
+pkill -x iapp >/dev/null 2>&1 || true
+sleep 0.2
 rm -rf "$APP_PATH"
 ditto "$ROOT_DIR/dist/iapp.app" "$APP_PATH"
-open "$APP_PATH"
+open -n "$APP_PATH"
 print "Installed and opened $APP_PATH"
