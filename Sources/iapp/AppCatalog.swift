@@ -33,7 +33,7 @@ final class AppCatalog {
             if let directChildren = try? FileManager.default.contentsOfDirectory(
                 at: root,
                 includingPropertiesForKeys: nil,
-                options: [.skipsHiddenFiles]
+                options: []
             ) {
                 for url in directChildren where url.pathExtension == "app" {
                     register(url, into: &found)
@@ -42,7 +42,7 @@ final class AppCatalog {
             guard let enumerator = FileManager.default.enumerator(
                 at: root,
                 includingPropertiesForKeys: [.isDirectoryKey],
-                options: [.skipsHiddenFiles, .skipsPackageDescendants]
+                options: [.skipsPackageDescendants]
             ) else { continue }
             for case let url as URL in enumerator where url.pathExtension == "app" {
                 register(url, into: &found)
