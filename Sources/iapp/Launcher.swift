@@ -20,12 +20,13 @@ final class LauncherController {
         self.model = model
         let panel = LauncherPanel(
             contentRect: NSRect(x: 0, y: 0, width: 560, height: 120),
-            styleMask: [.borderless, .fullSizeContentView],
+            styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
         panel.level = .statusBar
         panel.isFloatingPanel = true
+        panel.becomesKeyOnlyIfNeeded = true
         panel.hidesOnDeactivate = true
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         panel.backgroundColor = .clear
@@ -41,7 +42,6 @@ final class LauncherController {
             self?.hide()
             return nil
         }
-        NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
     }
 

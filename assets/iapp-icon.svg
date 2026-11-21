@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">iapp launcher icon</title>
+  <desc id="desc">Four colorful app tiles converge to a central launch point.</desc>
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf9"/>
+      <stop offset="1" stop-color="#eee5da"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#9dc7ff"/><stop offset="1" stop-color="#2878f7"/>
+    </linearGradient>
+    <linearGradient id="coral" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffc29e"/><stop offset="1" stop-color="#fa704c"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#a3f6c4"/><stop offset="1" stop-color="#39bf7d"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#d6b4ff"/><stop offset="1" stop-color="#8654e9"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#5f4d3c" flood-opacity=".2"/>
+    </filter>
+  </defs>
+  <rect x="54" y="54" width="916" height="916" rx="202" fill="url(#base)"/>
+  <g filter="url(#shadow)">
+    <path d="M260 190h140c39 0 70 31 70 70v140c0 45 16 79 42 112-33-26-67-42-112-42H260c-39 0-70-31-70-70V260c0-39 31-70 70-70Z" fill="url(#blue)"/>
+    <path d="M624 190h140c39 0 70 31 70 70v140c0 39-31 70-70 70H624c-45 0-79 16-112 42 26-33 42-67 42-112V260c0-39 31-70 70-70Z" fill="url(#coral)"/>
+    <path d="M260 834h140c39 0 70-31 70-70V624c0-45 16-79 42-112-33 26-67 42-112 42H260c-39 0-70 31-70 70v140c0 39 31 70 70 70Z" fill="url(#mint)"/>
+    <path d="M624 834h140c39 0 70-31 70-70V624c0-39-31-70-70-70H624c-45 0-79-16-112-42 26 33 42 67 42 112v140c0 39 31 70 70 70Z" fill="url(#violet)"/>
+  </g>
+</svg>

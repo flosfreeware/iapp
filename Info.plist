@@ -6,6 +6,7 @@
     <key>CFBundleDisplayName</key><string>iapp</string>
     <key>CFBundleExecutable</key><string>iapp</string>
     <key>CFBundleIdentifier</key><string>com.iapp.launcher</string>
+    <key>CFBundleIconFile</key><string>iapp</string>
     <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
     <key>CFBundleName</key><string>iapp</string>
     <key>CFBundlePackageType</key><string>APPL</string>

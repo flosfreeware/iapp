@@ -86,7 +86,6 @@ private final class InfoWindowController: NSWindowController {
             self?.close()
         }))
         super.showWindow(sender)
-        NSApp.activate(ignoringOtherApps: true)
     }
 }
 

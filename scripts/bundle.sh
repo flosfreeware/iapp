@@ -25,6 +25,9 @@ rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR/Contents/MacOS" "$OUTPUT_DIR/Contents/Resources"
 cp "$BIN_PATH" "$OUTPUT_DIR/Contents/MacOS/iapp"
 cp "$ROOT_DIR/Info.plist" "$OUTPUT_DIR/Contents/Info.plist"
+if [[ -f "$ROOT_DIR/assets/iapp.icns" ]]; then
+  cp "$ROOT_DIR/assets/iapp.icns" "$OUTPUT_DIR/Contents/Resources/iapp.icns"
+fi
 
 if [[ -n "${IAPP_SIGNING_IDENTITY:-}" ]]; then
   IDENTITY="$IAPP_SIGNING_IDENTITY"
