@@ -24,6 +24,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         if InstallationState.isFirstLaunch {
             info.showInstallation()
+        } else if commandPressInterceptor?.isEnabled != true {
+            info.showPermissions()
         }
     }
 
@@ -58,6 +60,11 @@ private final class InfoWindowController: NSWindowController {
         showWindow(nil)
     }
 
+    func showPermissions() {
+        mode = .permissions
+        showWindow(nil)
+    }
+
     override func loadWindow() {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 360, height: 220),
@@ -82,7 +89,7 @@ private final class InfoWindowController: NSWindowController {
     }
 }
 
-private enum InfoMode { case info, installation }
+private enum InfoMode { case info, installation, permissions }
 
 private struct InfoView: View {
     let mode: InfoMode
@@ -110,6 +117,21 @@ private struct InfoView: View {
                     Button("Continue") { finishInstallation() }
                         .keyboardShortcut(.defaultAction)
                 }
+            } else if mode == .permissions {
+                Text("iapp needs keyboard permission")
+                    .font(.title2.weight(.semibold))
+                Text("The Command shortcut cannot start until macOS allows iapp to observe keyboard input.")
+                    .foregroundStyle(.secondary)
+                LabeledContent("Accessibility", value: AXIsProcessTrusted() ? "Allowed" : "Required")
+                LabeledContent("Input Monitoring", value: CGPreflightListenEventAccess() ? "Allowed" : "Required")
+                HStack {
+                    Button("Accessibility Settings") { openPrivacyPane("Privacy_Accessibility") }
+                    Button("Input Monitoring Settings") { openPrivacyPane("Privacy_ListenEvent") }
+                }
+                Spacer()
+                Text("After enabling both, run make install-dev to restart iapp.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             } else {
                 LabeledContent("Contact", value: "contact@iapp.app")
                 LabeledContent("Installed", value: InstallationState.installedAt.formatted(date: .long, time: .shortened))
@@ -135,6 +157,12 @@ private struct InfoView: View {
             catch { loginItemError = "Could not enable login item: \(error.localizedDescription)"; return }
         }
         close()
+    }
+
+    private func openPrivacyPane(_ pane: String) {
+        let modern = "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?\(pane)"
+        guard let url = URL(string: modern) else { return }
+        NSWorkspace.shared.open(url)
     }
 
 }
