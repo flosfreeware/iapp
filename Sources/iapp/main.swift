@@ -4,12 +4,13 @@ import ServiceManagement
 import SwiftUI
 
 @main
-struct IApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+enum IApp {
+    private static let appDelegate = AppDelegate()
 
-    var body: some Scene {
-        // iapp owns its windows explicitly so a login launch remains unobtrusive.
-        Settings { EmptyView() }
+    static func main() {
+        let app = NSApplication.shared
+        app.delegate = appDelegate
+        app.run()
     }
 }
 
