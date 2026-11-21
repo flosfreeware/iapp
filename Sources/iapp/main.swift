@@ -16,11 +16,16 @@ struct IApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let launcher = LauncherController()
     private let info = InfoWindowController()
+    private var commandSpaceInterceptor: CommandSpaceInterceptor?
     private var hotKey: GlobalHotKey?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory) // no Dock icon and no menu-bar item
-        hotKey = GlobalHotKey { [weak self] in self?.launcher.toggle() }
+        commandSpaceInterceptor = CommandSpaceInterceptor { [weak self] in self?.launcher.toggle() }
+        // Without Accessibility approval, retain the best-effort hotkey fallback.
+        if commandSpaceInterceptor?.isEnabled != true {
+            hotKey = GlobalHotKey { [weak self] in self?.launcher.toggle() }
+        }
 
         if InstallationState.isFirstLaunch {
             info.showInstallation()
@@ -97,6 +102,9 @@ private struct InfoView: View {
 
             if mode == .installation {
                 Text("A quiet, instant application launcher.")
+                    .foregroundStyle(.secondary)
+                Text("Allow Accessibility when macOS asks. It lets iapp replace Spotlight for ⌘ Space.")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
                 Toggle("Open iapp at login", isOn: $startAtLogin)
                 if let loginItemError {
