@@ -16,11 +16,11 @@ struct IApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let launcher = LauncherController()
     private let info = InfoWindowController()
-    private var hotKey: GlobalHotKey?
+    private var commandPressInterceptor: CommandPressInterceptor?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory) // no Dock icon and no menu-bar item
-        hotKey = GlobalHotKey { [weak self] in self?.launcher.toggle() }
+        commandPressInterceptor = CommandPressInterceptor { [weak self] in self?.launcher.toggle() }
 
         if InstallationState.isFirstLaunch {
             info.showInstallation()
@@ -98,7 +98,7 @@ private struct InfoView: View {
             if mode == .installation {
                 Text("A quiet, instant application launcher.")
                     .foregroundStyle(.secondary)
-                Text("To use ⌘ Space, turn off or remap Spotlight’s ⌘ Space shortcut in System Settings.")
+                Text("Press and release Command on its own to open the launcher.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Toggle("Open iapp at login", isOn: $startAtLogin)
@@ -114,7 +114,7 @@ private struct InfoView: View {
                 LabeledContent("Contact", value: "contact@iapp.app")
                 LabeledContent("Installed", value: InstallationState.installedAt.formatted(date: .long, time: .shortened))
                 Divider()
-                Text("Press ⌘ Space to open the launcher after remapping Spotlight.")
+                Text("Press and release Command on its own to open the launcher.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                 Spacer()

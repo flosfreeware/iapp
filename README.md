@@ -1,6 +1,6 @@
 # iapp
 
-Tiny, menu-bar-free macOS application launcher. Press `⌘ Space`, type an app name (typos are tolerated), and press Return. Escape closes the launcher.
+Tiny, menu-bar-free macOS application launcher. Press and release `⌘` on its own, type an app name (typos are tolerated), and press Return. Escape closes the launcher.
 
 ## Development
 
@@ -18,9 +18,9 @@ make install-release
 
 `IAPP_SIGNING_IDENTITY="Developer ID Application: Your Name" make install-release` signs a distributable build. Without it, the script ad-hoc signs the app for local use.
 
-## Important: Command–Space
+## Important: Command press
 
-macOS reserves `⌘ Space` for Spotlight by default. iapp registers that shortcut using Apple's supported global-hotkey API, but it cannot take precedence over Spotlight. Disable or change Spotlight’s shortcut in **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** once, then restart iapp. iapp does not need Accessibility permission.
+iapp opens when Command is pressed and released without another key. It needs macOS Accessibility permission to observe that global gesture. It never consumes keyboard input, so standard Command shortcuts remain unaffected.
 
 ## Product behavior
 
