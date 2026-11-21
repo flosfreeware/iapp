@@ -1,4 +1,4 @@
-.PHONY: build dev release install-dev install-release uninstall
+.PHONY: build dev release release-dmg notarize-dmg install-dev install-release uninstall
 
 build:
 	swift build
@@ -8,6 +8,12 @@ dev:
 
 release:
 	./scripts/bundle.sh release
+
+release-dmg:
+	./scripts/release-dmg.sh
+
+notarize-dmg:
+	./scripts/notarize-dmg.sh
 
 install-dev:
 	./scripts/install.sh debug

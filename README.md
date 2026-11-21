@@ -25,10 +25,28 @@ iapp opens when Command is pressed and released without another key. It needs ma
 ## Product behavior
 
 - No menu-bar item or Dock icon while running.
-- App inventory is scanned only when the launcher opens, then kept in memory for that session; it makes no network requests.
+- App inventory is refreshed whenever the launcher opens; it makes no network requests.
 - iapp stays running without any visible UI. Reopening `iapp.app` while it is running shows a small information window; the first launch asks about opening at login (enabled by default).
 - Login-item setup uses `SMAppService`, available on macOS 13 and later.
 
 ## Distribution
 
-For GitHub releases, archive the signed `.app` from `dist/iapp.app`, notarize it with your Apple Developer credentials, then staple it. The project intentionally does not include credentials or automatic notarization.
+Create a drag-to-Applications DMG with:
+
+```sh
+make release-dmg
+```
+
+Before notarizing for the first time, save an app-specific password to your Keychain (replace the placeholders):
+
+```sh
+xcrun notarytool store-credentials iapp-notary --apple-id "YOUR_APPLE_ID" --team-id "YOUR_TEAM_ID" --password "YOUR_APP_SPECIFIC_PASSWORD"
+```
+
+Then notarize and staple the generated DMG:
+
+```sh
+make notarize-dmg
+```
+
+Upload `dist/iapp-<version>.dmg` to a GitHub Release. Credentials remain in Keychain and are never stored in this repository.

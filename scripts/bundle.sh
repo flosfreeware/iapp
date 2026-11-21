@@ -37,5 +37,14 @@ else
   IDENTITY="${IAPP_RELEASE_SIGNING_IDENTITY:--}"
 fi
 
-codesign --force --sign "$IDENTITY" --timestamp=none "$OUTPUT_DIR"
+if [[ "$CONFIGURATION" == "release" ]]; then
+  if [[ "$IDENTITY" == "-" ]]; then
+    print -u2 "A Developer ID Application identity is required for a release build."
+    exit 65
+  fi
+  codesign --force --options runtime --timestamp --sign "$IDENTITY" "$OUTPUT_DIR"
+else
+  codesign --force --sign "$IDENTITY" --timestamp=none "$OUTPUT_DIR"
+fi
+codesign --verify --deep --strict "$OUTPUT_DIR"
 print "Built $OUTPUT_DIR"
