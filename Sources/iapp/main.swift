@@ -16,16 +16,11 @@ struct IApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let launcher = LauncherController()
     private let info = InfoWindowController()
-    private var commandSpaceInterceptor: CommandSpaceInterceptor?
     private var hotKey: GlobalHotKey?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory) // no Dock icon and no menu-bar item
-        commandSpaceInterceptor = CommandSpaceInterceptor { [weak self] in self?.launcher.toggle() }
-        // Without Accessibility approval, retain the best-effort hotkey fallback.
-        if commandSpaceInterceptor?.isEnabled != true {
-            hotKey = GlobalHotKey { [weak self] in self?.launcher.toggle() }
-        }
+        hotKey = GlobalHotKey { [weak self] in self?.launcher.toggle() }
 
         if InstallationState.isFirstLaunch {
             info.showInstallation()
@@ -103,7 +98,7 @@ private struct InfoView: View {
             if mode == .installation {
                 Text("A quiet, instant application launcher.")
                     .foregroundStyle(.secondary)
-                Text("Allow Accessibility when macOS asks. It lets iapp replace Spotlight for ⌘ Space.")
+                Text("To use ⌘ Space, turn off or remap Spotlight’s ⌘ Space shortcut in System Settings.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Toggle("Open iapp at login", isOn: $startAtLogin)
@@ -118,21 +113,12 @@ private struct InfoView: View {
             } else {
                 LabeledContent("Contact", value: "contact@iapp.app")
                 LabeledContent("Installed", value: InstallationState.installedAt.formatted(date: .long, time: .shortened))
-                HStack {
-                    Text("⌘ Space interception")
-                    Spacer()
-                    Text(AXIsProcessTrusted() ? "Enabled" : "Needs Accessibility permission")
-                        .foregroundStyle(AXIsProcessTrusted() ? .green : .orange)
-                }
                 Divider()
-                Text("Press ⌘ Space to open the launcher.")
+                Text("Press ⌘ Space to open the launcher after remapping Spotlight.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                 Spacer()
                 HStack {
-                    if !AXIsProcessTrusted() {
-                        Button("Open Accessibility Settings") { openAccessibilitySettings() }
-                    }
                     Spacer()
                     Button("Close", action: close).keyboardShortcut(.cancelAction)
                 }
@@ -151,8 +137,4 @@ private struct InfoView: View {
         close()
     }
 
-    private func openAccessibilitySettings() {
-        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") else { return }
-        NSWorkspace.shared.open(url)
-    }
 }

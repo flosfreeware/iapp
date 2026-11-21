@@ -20,7 +20,7 @@ make install-release
 
 ## Important: Command–Space
 
-macOS reserves `⌘ Space` for Spotlight by default. iapp registers that shortcut using Apple's supported global-hotkey API, but it cannot take precedence over Spotlight. Disable or change Spotlight’s shortcut in **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** once, then restart iapp.
+macOS reserves `⌘ Space` for Spotlight by default. iapp registers that shortcut using Apple's supported global-hotkey API, but it cannot take precedence over Spotlight. Disable or change Spotlight’s shortcut in **System Settings → Keyboard → Keyboard Shortcuts → Spotlight** once, then restart iapp. iapp does not need Accessibility permission.
 
 ## Product behavior
 
