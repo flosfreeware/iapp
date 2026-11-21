@@ -86,9 +86,15 @@ private struct LauncherView: View {
             )
 
             HStack(spacing: 8) {
-                Image(systemName: "return")
-                Text(model.match?.name ?? "No matching application")
-                    .font(.system(size: 14, weight: .medium))
+                if let match = model.match {
+                    AppIcon(app: match)
+                    Text(match.name)
+                        .font(.system(size: 14, weight: .medium))
+                } else {
+                    Image(systemName: "return")
+                    Text("No matching application")
+                        .font(.system(size: 14, weight: .medium))
+                }
                 Spacer()
                 Text("esc to cancel")
                     .font(.caption)
@@ -99,6 +105,26 @@ private struct LauncherView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 17)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+}
+
+private struct AppIcon: View {
+    let app: LaunchableApp
+    private static let cache = NSCache<NSString, NSImage>()
+
+    var body: some View {
+        Image(nsImage: image)
+            .resizable()
+            .interpolation(.high)
+            .frame(width: 22, height: 22)
+    }
+
+    private var image: NSImage {
+        let key = app.url.path as NSString
+        if let cached = Self.cache.object(forKey: key) { return cached }
+        let icon = NSWorkspace.shared.icon(forFile: app.url.path)
+        Self.cache.setObject(icon, forKey: key)
+        return icon
     }
 }
 
