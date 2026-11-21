@@ -27,18 +27,34 @@ final class AppCatalog {
         var found = Set<LaunchableApp>()
 
         for root in roots {
+            // DirectoryEnumerator can omit a top-level app package when asked to
+            // skip package descendants. Index direct children explicitly (Safari
+            // lives at /Applications/Safari.app on this Mac).
+            if let directChildren = try? FileManager.default.contentsOfDirectory(
+                at: root,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            ) {
+                for url in directChildren where url.pathExtension == "app" {
+                    register(url, into: &found)
+                }
+            }
             guard let enumerator = FileManager.default.enumerator(
                 at: root,
                 includingPropertiesForKeys: [.isDirectoryKey],
                 options: [.skipsHiddenFiles, .skipsPackageDescendants]
             ) else { continue }
             for case let url as URL in enumerator where url.pathExtension == "app" {
-                guard url != Bundle.main.bundleURL else { continue }
-                let name = url.deletingPathExtension().lastPathComponent
-                found.insert(LaunchableApp(name: name, url: url))
+                register(url, into: &found)
             }
         }
         apps = found.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+    }
+
+    private func register(_ url: URL, into apps: inout Set<LaunchableApp>) {
+        guard url != Bundle.main.bundleURL else { return }
+        let name = url.deletingPathExtension().lastPathComponent
+        apps.insert(LaunchableApp(name: name, url: url))
     }
 
     private func normalize(_ text: String) -> String {
