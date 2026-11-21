@@ -85,7 +85,8 @@ private struct LauncherView: View {
         VStack(alignment: .leading, spacing: 7) {
             LauncherTextField(
                 text: $model.query,
-                submit: model.openMatch
+                submit: model.openMatch,
+                cancel: model.cancel
             )
 
             if !model.query.isEmpty {
@@ -144,6 +145,7 @@ private final class LauncherPanel: NSPanel {
 private struct LauncherTextField: NSViewRepresentable {
     @Binding var text: String
     let submit: () -> Void
+    let cancel: () -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
@@ -175,5 +177,11 @@ private struct LauncherTextField: NSViewRepresentable {
         }
 
         @objc func submit() { parent.submit() }
+
+        func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+            guard commandSelector == #selector(NSResponder.cancelOperation(_:)) else { return false }
+            parent.cancel()
+            return true
+        }
     }
 }
