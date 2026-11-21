@@ -16,6 +16,7 @@ final class LauncherController {
     }
 
     func show() {
+        catalog.refresh()
         let model = LauncherModel(catalog: catalog, dismiss: { [weak self] in self?.hide() })
         self.model = model
         let panel = LauncherPanel(

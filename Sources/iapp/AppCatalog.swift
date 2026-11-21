@@ -5,13 +5,13 @@ struct LaunchableApp: Hashable {
     let url: URL
 }
 
-/// A per-session, in-memory index. Scanning happens only when the user opens the launcher.
+/// A fresh in-memory index is built only when the search bar opens.
 final class AppCatalog {
     private var apps: [LaunchableApp] = []
-    private var lastScan: Date = .distantPast
+
+    func refresh() { scan() }
 
     func bestMatch(for query: String) -> LaunchableApp? {
-        if Date().timeIntervalSince(lastScan) > 60 { scan() }
         let normalizedQuery = normalize(query)
         guard !normalizedQuery.isEmpty else { return nil }
         let ranked = apps.map { app in (app, score(normalizedQuery, against: normalize(app.name))) }
@@ -20,7 +20,6 @@ final class AppCatalog {
     }
 
     private func scan() {
-        lastScan = Date()
         let roots = ["/Applications", "/System/Applications", "/System/Applications/Utilities", "~/Applications"]
             .map { NSString(string: $0).expandingTildeInPath }
             .map(URL.init(fileURLWithPath:))
