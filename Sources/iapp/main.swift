@@ -118,12 +118,24 @@ private struct InfoView: View {
             } else {
                 LabeledContent("Contact", value: "contact@iapp.app")
                 LabeledContent("Installed", value: InstallationState.installedAt.formatted(date: .long, time: .shortened))
+                HStack {
+                    Text("⌘ Space interception")
+                    Spacer()
+                    Text(AXIsProcessTrusted() ? "Enabled" : "Needs Accessibility permission")
+                        .foregroundStyle(AXIsProcessTrusted() ? .green : .orange)
+                }
                 Divider()
                 Text("Press ⌘ Space to open the launcher.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                 Spacer()
-                HStack { Spacer(); Button("Close", action: close).keyboardShortcut(.cancelAction) }
+                HStack {
+                    if !AXIsProcessTrusted() {
+                        Button("Open Accessibility Settings") { openAccessibilitySettings() }
+                    }
+                    Spacer()
+                    Button("Close", action: close).keyboardShortcut(.cancelAction)
+                }
             }
         }
         .padding(22)
@@ -137,5 +149,10 @@ private struct InfoView: View {
             catch { loginItemError = "Could not enable login item: \(error.localizedDescription)"; return }
         }
         close()
+    }
+
+    private func openAccessibilitySettings() {
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") else { return }
+        NSWorkspace.shared.open(url)
     }
 }

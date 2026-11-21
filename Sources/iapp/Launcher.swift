@@ -132,7 +132,6 @@ private struct LauncherTextField: NSViewRepresentable {
 
     func updateNSView(_ field: NSTextField, context: Context) {
         if field.stringValue != text { field.stringValue = text }
-        DispatchQueue.main.async { field.window?.makeFirstResponder(field) }
     }
 
     final class Coordinator: NSObject, NSTextFieldDelegate {
