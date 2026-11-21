@@ -5,6 +5,7 @@ final class LauncherController {
     private let catalog = AppCatalog()
     private var panel: LauncherPanel?
     private var model: LauncherModel?
+    private var escapeMonitor: Any?
 
     func toggle() {
         if let panel, panel.isVisible {
@@ -34,11 +35,21 @@ final class LauncherController {
         panel.contentView = NSHostingView(rootView: LauncherView(model: model))
         panel.center()
         self.panel = panel
+        if let escapeMonitor { NSEvent.removeMonitor(escapeMonitor) }
+        escapeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard event.keyCode == 53 else { return event } // kVK_Escape
+            self?.hide()
+            return nil
+        }
         NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
     }
 
-    func hide() { panel?.orderOut(nil) }
+    func hide() {
+        panel?.orderOut(nil)
+        if let escapeMonitor { NSEvent.removeMonitor(escapeMonitor) }
+        escapeMonitor = nil
+    }
 }
 
 final class LauncherModel: ObservableObject {
