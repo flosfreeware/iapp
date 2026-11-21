@@ -16,7 +16,7 @@ This builds, replaces `~/Applications/iapp.app`, and launches it. Repeat the sam
 make install-release
 ```
 
-`IAPP_SIGNING_IDENTITY="Developer ID Application: Your Name" make install-release` signs a distributable build. Without it, the script ad-hoc signs the app for local use.
+The installer reads optional local identities from `.iapp-signing.local` (ignored by Git). Use a stable Apple Development identity for dev builds to retain macOS privacy permissions, and a Developer ID identity for release builds. An `IAPP_SIGNING_IDENTITY` environment variable overrides either value for one build.
 
 ## Important: Command press
 

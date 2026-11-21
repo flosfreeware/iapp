@@ -12,6 +12,11 @@ OUTPUT_DIR="$ROOT_DIR/dist/iapp.app"
 BUILD_ARGS=()
 [[ "$CONFIGURATION" == "release" ]] && BUILD_ARGS+=(--configuration release)
 
+# Keep personal signing identities out of the repository. A local config makes
+# TCC permissions stable across rebuilds because every copy has the same signer.
+SIGNING_CONFIG="$ROOT_DIR/.iapp-signing.local"
+[[ -f "$SIGNING_CONFIG" ]] && source "$SIGNING_CONFIG"
+
 cd "$ROOT_DIR"
 swift build "${BUILD_ARGS[@]}"
 
@@ -21,6 +26,13 @@ mkdir -p "$OUTPUT_DIR/Contents/MacOS" "$OUTPUT_DIR/Contents/Resources"
 cp "$BIN_PATH" "$OUTPUT_DIR/Contents/MacOS/iapp"
 cp "$ROOT_DIR/Info.plist" "$OUTPUT_DIR/Contents/Info.plist"
 
-IDENTITY="${IAPP_SIGNING_IDENTITY:--}"
+if [[ -n "${IAPP_SIGNING_IDENTITY:-}" ]]; then
+  IDENTITY="$IAPP_SIGNING_IDENTITY"
+elif [[ "$CONFIGURATION" == "debug" ]]; then
+  IDENTITY="${IAPP_DEV_SIGNING_IDENTITY:--}"
+else
+  IDENTITY="${IAPP_RELEASE_SIGNING_IDENTITY:--}"
+fi
+
 codesign --force --sign "$IDENTITY" --timestamp=none "$OUTPUT_DIR"
 print "Built $OUTPUT_DIR"

@@ -2,3 +2,4 @@
 DerivedData/
 dist/
 .DS_Store
+.iapp-signing.local
