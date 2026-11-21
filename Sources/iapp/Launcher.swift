@@ -88,22 +88,24 @@ private struct LauncherView: View {
                 submit: model.openMatch
             )
 
-            HStack(spacing: 8) {
-                if let match = model.match {
-                    AppIcon(app: match)
-                    Text(match.name)
-                        .font(.system(size: 14, weight: .medium))
-                } else {
-                    Image(systemName: "return")
-                    Text("No matching application")
-                        .font(.system(size: 14, weight: .medium))
+            if !model.query.isEmpty {
+                HStack(spacing: 8) {
+                    if let match = model.match {
+                        AppIcon(app: match)
+                        Text(match.name)
+                            .font(.system(size: 14, weight: .medium))
+                    } else {
+                        Image(systemName: "return")
+                        Text("No matching application")
+                    }
+                    Spacer()
+                    Text("esc to cancel")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                Spacer()
-                Text("esc to cancel")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(model.match == nil ? .secondary : .primary)
             }
-            .foregroundStyle(model.match == nil ? .secondary : .primary)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 17)
