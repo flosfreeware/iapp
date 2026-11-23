@@ -6,6 +6,7 @@ final class LauncherController {
     private var panel: LauncherPanel?
     private var model: LauncherModel?
     private var escapeMonitor: Any?
+    private var workspaceActivationObserver: NSObjectProtocol?
     private var launcherIsVisible = false
 
     func toggle() {
@@ -38,6 +39,7 @@ final class LauncherController {
         panel.isOpaque = false
         panel.hasShadow = true
         panel.cancelHandler = { [weak self] in self?.hide() }
+        panel.resignHandler = { [weak self] in self?.hide() }
         panel.contentView = NSHostingView(rootView: LauncherView(model: model))
         panel.center()
         self.panel = panel
@@ -48,6 +50,13 @@ final class LauncherController {
             self?.hide()
             return nil
         }
+        workspaceActivationObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.hide()
+        }
         panel.makeKeyAndOrderFront(nil)
     }
 
@@ -56,6 +65,10 @@ final class LauncherController {
         launcherIsVisible = false
         if let escapeMonitor { NSEvent.removeMonitor(escapeMonitor) }
         escapeMonitor = nil
+        if let workspaceActivationObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(workspaceActivationObserver)
+        }
+        workspaceActivationObserver = nil
     }
 }
 
@@ -141,9 +154,14 @@ private struct AppIcon: View {
 /// Borderless panels do not reliably become key windows. This subclass does.
 private final class LauncherPanel: NSPanel {
     var cancelHandler: (() -> Void)?
+    var resignHandler: (() -> Void)?
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
     override func cancelOperation(_ sender: Any?) { cancelHandler?() }
+    override func resignKey() {
+        super.resignKey()
+        DispatchQueue.main.async { [weak self] in self?.resignHandler?() }
+    }
 }
 
 private struct LauncherTextField: NSViewRepresentable {

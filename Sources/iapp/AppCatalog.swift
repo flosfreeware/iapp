@@ -20,7 +20,13 @@ final class AppCatalog {
     }
 
     private func scan() {
-        let roots = ["/Applications", "/System/Applications", "/System/Applications/Utilities", "~/Applications"]
+        let roots = [
+            "/Applications",
+            "/System/Applications",
+            "/System/Applications/Utilities",
+            "/System/Library/CoreServices",
+            "~/Applications",
+        ]
             .map { NSString(string: $0).expandingTildeInPath }
             .map(URL.init(fileURLWithPath:))
         var found = Set<LaunchableApp>()
