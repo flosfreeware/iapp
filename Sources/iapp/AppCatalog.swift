@@ -25,6 +25,7 @@ final class AppCatalog {
             "/System/Applications",
             "/System/Applications/Utilities",
             "/System/Library/CoreServices",
+            "/Applications/Xcode.app/Contents/Applications",
             "~/Applications",
         ]
             .map { NSString(string: $0).expandingTildeInPath }
